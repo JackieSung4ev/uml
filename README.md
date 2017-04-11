@@ -76,3 +76,39 @@ iptables -t nat -A PREROUTING -i venet0 -p udp --dport 9191 -j DNAT --to-destina
 python mujson_mgr.py -a -p 端口 -k 密码 -m 加密方式 -O 协议 -o 混淆
 ```
 加完记得在母机增加iptables端口转发相关的代码
+
+
+
+
+
+# OpenVZ使用BBR新姿势：LKL一键安装包
+感谢 @allientNeko 的研究。具体帖子请看： https://www.91yunbbs.com/discussion/87
+简单的说 LKL 相比 uml 好处还是不少的，只需要转发端口，无论是 ssr 都是装在母鸡上，和你平时使用无差，而 UML 需要在 UML 系统里安装。 LKL 的占用资源也更少。不过据说 LKL 的加速效果没有 UML 好，我没有测试验证，大家可以自行折腾。
+
+## LKL 使用前置需求
+LKL 要求 ldd 的版本至少在 2.14 ，目前我测试下来，如果不想折腾建议直接安装 CentOS7 ， Debian8 和 Ubuntu16
+安装包只使用 64bit 的系统。
+默认的端口转发只转发了 9000-9999 的端口，如果你不想费心修改，请把 ssr 等应用的端口设在这个范围
+只适用 openvz ，请他虚拟请参考 原帖 自己折腾。
+
+
+## 安装 LKL 一键包命令
+```
+wget --no-check-certificate https://github.com/91yun/uml/raw/master/lkl/install.sh && bash install.sh
+```
+
+
+## 如何判断是否安装成功
+```
+ping 10.0.0.2
+```
+如果 10.0.0.2 能 ping 通说明成功， ping 不通说明失败
+
+
+## 如果修改转发端口
+```
+修改 /root/lkl/run.sh ，查找 9000-9999 ，改成你想要的端口段
+修改 /root/lkl/haproxy.cfg 查找 9000-9999 ，改成你想要的端口段
+重启 VPS
+```
+
